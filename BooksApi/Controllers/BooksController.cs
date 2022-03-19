@@ -39,6 +39,7 @@ namespace BooksApi.Controllers
             return CreatedAtAction(nameof(GetBooks), new { id = newBook.Id }, newBook);
         }
 
+        [HttpPut]
         public async Task<ActionResult> PutBooks(int id, [FromBody] Book book)
         {
             if (id != book.Id)
