@@ -28,8 +28,36 @@ namespace BooksApi.Controllers
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBooks(int id)
+        {   
+            return await _bookRepository.Get(id); //take single book.
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Book>>PostBooks([FromBody] Book book)
         {
-            return await _bookRepository.Get(id);
+            var newBook = await _bookRepository.Create(book);
+            return CreatedAtAction(nameof(GetBooks), new { id = newBook.Id }, newBook);
+        }
+
+        public async Task<ActionResult> PutBooks(int id, [FromBody] Book book)
+        {
+            if (id != book.Id)
+            {
+                return BadRequest();
+            }
+            await _bookRepository.Update(book);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var bookDelete = await _bookRepository.Get(id);
+            if (bookDelete == null)
+                return NotFound();
+
+            await _bookRepository.Delete(bookDelete.Id);
+            return NoContent();
         }
     }
 }
